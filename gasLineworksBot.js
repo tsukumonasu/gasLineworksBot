@@ -27,6 +27,7 @@ function doPost(e) {
   var contents = JSON.parse(e.postData.contents);
   var accountId = contents.source.accountId;
 
+  // log
   sheet.getRange(nextRow, 2).setValue(accountId);
   sheet.getRange(nextRow, 3).setValue(contents.content.text);
 
@@ -34,18 +35,15 @@ function doPost(e) {
     contents.content.text == '?' ||
     contents.content.text == 'ヘルプ' ||
     contents.content.text == 'help') {
-    // startシートのメッセージをユーザに送る
-    sendText(
-      accountId,
-      SpreadsheetApp.getActiveSpreadsheet().getSheetByName('start').getRange('A1').getValue()
-    );
-    // 選択肢のメッセージをユーザに送る
+    // start
+
+    sendText(accountId, SpreadsheetApp.getActiveSpreadsheet().getSheetByName('start').getRange('A1').getValue());
     sendButtonTemplate(accountId, 'start');
     return;
   }
 
+  sendText(accountId, getMessage(accountId, contents.content.text));
   sendButtonTemplate(accountId, contents.content.text);
-  sendText(accountId, contents.content.text, contents.content.postback);
   return;
 }
 
@@ -150,22 +148,17 @@ function getMessage(accountId, talkMessage, postback) {
         '\thttps://contact.worksmobile.com/v2/organization/chart?keyword=' + encodeURI(sheet.getRange(i, 4).getValue())
     }
   }
-  return talkMessage;
+  return '回答が登録されておりません。別のご質問を入力してください。';
 }
 
 /**
  * テキスト送信
  */
 function sendText(accountId, talkMessage) {
-  var msg = getMessage(accountId, talkMessage);
-
-  if (talkMessage == msg) {
-    return;
-  }
 
   var content = {
     "type": "text",
-    "text": msg
+    "text": talkMessage
   };
 
   const options = {
