@@ -132,7 +132,7 @@ function getMessage(accountId, talkMessage, postback) {
         Logger.log(res)
 
       }
-      continue;
+      return 'トークルームを作成いたしました。';
     }
 
     if (talkMessage.match(regexp)) {
