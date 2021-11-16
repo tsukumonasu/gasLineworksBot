@@ -155,6 +155,9 @@ function getMessage(accountId, talkMessage, postback) {
  * テキスト送信
  */
 function sendText(accountId, talkMessage) {
+  if (talkMessage == '') {
+    return;
+  }
 
   var content = {
     "type": "text",
@@ -169,14 +172,13 @@ function sendText(accountId, talkMessage) {
       'Authorization': 'Bearer ' + token,
     },
     'payload': JSON.stringify({
-      "botNo": botNo,
       "accountId": accountId,
       "content": content
     }),
     'muteHttpExceptions': true,
   };
 
-  var res = UrlFetchApp.fetch('https://apis.worksmobile.com/' + apiId + '/message/sendMessage/v2', options);
+  var res = UrlFetchApp.fetch('https://apis.worksmobile.com/r/' + apiId + '/message/v1/bot/' + botNo +'/message/push', options);
   Logger.log(res)
 }
 
